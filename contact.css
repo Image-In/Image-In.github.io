@@ -1,0 +1,22 @@
+
+.site{
+	position: absolute;
+	margin: auto;
+    height: 100%;
+    width: 100%;
+}
+
+.echo{
+  position: absolute;
+  right: 120px;
+  margin:auto;
+
+}
+
+.img { 
+  position: absolute; 
+  right: 30px; 
+  width: 50px; 
+  height: 80%; 
+  margin: auto; 
+} 

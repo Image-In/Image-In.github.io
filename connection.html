@@ -1,0 +1,108 @@
+<?php
+session_start();
+
+$bdd = new PDO('mysql:host=localhost;dbname=espace_membre', 'root', 'root'); 
+
+if (isset($_POST['formconnexion'])) 
+{
+   $mailconnect = htmlspecialchars($_POST['mailconnect']);
+   $mdpconnect = sha1($_POST['mdpconnect']);
+
+   if (!empty($mailconnect) AND !empty($mdpconnect)) 
+   {
+      $requser = $bdd->prepare("SELECT * FROM membre WHERE mail = ? AND motdepasse = ?");
+      $requser->execute(array($mailconnect, $mdpconnect));
+      $userexist = $requser->rowCount();
+      if ($userexist == 1) 
+      {
+         $userinfo = $requser->fetch();
+         $_SESSION['id'] = $userinfo['id'];
+         $_SESSION['pseudo'] = $userinfo['pseudo'];
+         $_SESSION['mail'] = $userinfo['mail'];
+         header("Location: index.php ");
+
+      }
+      else
+      {
+          $erreur = "Adresse mail ou mot de passe incorrect !";
+      }
+
+   }
+   else
+  {
+    echo "string";
+  }
+}
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+  <title>GAM engine</title>
+  <link rel="stylesheet" href="connection.css">
+  <link rel="stylesheet" type="text/css" href="styles_bootstrap.css">
+  <link rel="icon" type="image/png" href="favicon.png" />
+</head>
+<body>
+  
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+ <img class="img" src="favicon.png">
+ <p class="echo">
+
+ <?php 
+ if (isset($_SESSION['pseudo']))
+  {
+    echo 'session de '; echo $_SESSION['pseudo'];
+  } 
+
+ else { 
+
+  echo "<a class=\"nav-link\" href=\"connection.php\">Connection</a>"; 
+
+  } 
+
+  ?></p>
+  <a class="navbar-brand" href="index.php">GAM engine</a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link " href="ventes.php">Ventes <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link " href="Echanges.php">Echanges <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="contacts.php">Contacts</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+    <div class="container">
+
+      <form method="POST" class="form-signin">
+        <h2 class="form-signin-heading">Connection</h2>
+
+        <label for="inputEmail" class="sr-only">Adresse mail</label>
+        <input type="email" name="mailconnect" id="inputEmail" class="form-control" placeholder="Adresse mail" required autofocus>
+        <label for="inputPassword" class="sr-only">Mot de passe</label>
+        <input type="password" name="mdpconnect" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+        <a class="co" href="inscription.php" target="_self">S'enregistrer</a>
+        <button class="btn btn-lg btn-primary btn-block" name="formconnexion" type="submit">Connection</button>
+      </form>
+     <?php
+      if (isset($erreur)) 
+      {
+         echo '<center><font color="red">'.$erreur."</font></center>";
+      }
+      if (isset($perfect)) 
+      {
+         echo '<center><font color="green">'.$perfect."</font></center>";
+      }
+      ?>
+    </div> <!-- /container -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
